@@ -1,1 +1,1 @@
-powershell.exe -WindowStyle Hidden -Command " & '%ProgramFiles%\IdleTimeout\IdleTimeout.ps1' -Timeout 60 -Repeat -SleepTime 10 " > %TEMP%\IdleTimeout.log
+powershell.exe -WindowStyle Hidden -Command " & '%ProgramFiles%\IdleTimeout\IdleTimeout.ps1' -Repeat" > %TEMP%\IdleTimeout.log
