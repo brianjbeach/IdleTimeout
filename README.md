@@ -4,4 +4,4 @@ This project is a PowerShell script that will log an idl user out of Amazon Work
 
 IdleTimeout.ps1 should be placed in %ProgramFiles%\IdleTiemout\
 
-IdleTimeout.bat should be placed in %ProgramData%\Microsoft\Windows\Start Menu\Programs\Startup
+IdleTimeout.bat should be placed in %ProgramData%\Microsoft\Windows\Start Menu\Programs\Startup\
