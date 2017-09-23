@@ -1,5 +1,7 @@
 ﻿param (
-    [string]$Timeout = (30 * 60)
+    [string]$Timeout = (30 * 60),
+    [switch]$Repeat,
+    [int]$SleepTime = (15 * 60)
  )
 
 
@@ -41,28 +43,34 @@ namespace PInvoke.Win32 {
 '@
 
 
-#Check if the user is logged in
-If ( (qwinsta | Select-String -Pattern "^>console").Matches.Length -gt 0) {
-    Write-Host ("The logged in user has been idle for " + [PInvoke.Win32.UserInput]::IdleTime + " seconds.")
 
-    #Check if the user has been idle too long
-    $IdleTime = [PInvoke.Win32.UserInput]::IdleTime.TotalSeconds 
-    If ($IdleTime -gt $Timeout) {
-        Write-Host ("Session has been idle for more than " + $Timeout + " seconds. Terminating session.")
-        If (Test-Path HKCU:\NICE) {
-            #This is an AppStream instance.
-            shutdown.exe /s /t 60
+Do {
+    #Check if the user is logged in
+    If ( (qwinsta | Select-String -Pattern "^>console").Matches.Length -gt 0) {
+
+        $IdleTime = [PInvoke.Win32.UserInput]::IdleTime.TotalSeconds  
+        Write-Host ("The logged in user has been idle for $IdleTime seconds.")
+
+        #Check if the user has been idle too long    
+        If ($IdleTime -gt $Timeout) {
+            Write-Host ("Session has been idle for more than $Timeout seconds. Terminating session.")
+            If (Test-Path HKCU:\NICE) {
+                #This is an AppStream instance.
+                shutdown.exe /s /t 60
+            }
+            Else {
+                #This is a WorkSpace instance
+                tsdiscon console
+            }
         }
-        Else {
-            #This is a WorkSpace instance
-            tsdiscon console
-        }
-    }
    
-}
-Else {
-    Write-Host ("There is no user logged in")
-}
-
+    }
+    Else {
+        Write-Host ("There is no user logged in")
+    }
+    
+    Start-Sleep -Seconds $SleepTime
+    
+} While ($Repeat)
 
 
